@@ -54,7 +54,7 @@ services:
       - rnp
 
   auth_db:
-    image: mongo
+    image: mongo:latest
     container_name: rnp-mongo-auth
     volumes:
       - mongodb_auth:/data/db
