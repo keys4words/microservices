@@ -6,8 +6,6 @@ services:
     container_name: rnp-front
     command: serve -s build -l 3000
     restart: unless-stopped
-    # ports:
-      # - "3000:3000"
     networks:
       - rnp
 
@@ -16,11 +14,9 @@ services:
     container_name: rnp-api
     command: npm run start
     restart: unless-stopped
-    ports:
-      - "3001:3001"
     environment:
       - PORT=3001
-      - HOST=http://example.com
+      # - HOST=http://example.com
       - MONGO_URL=mongodb://db:27017/api
       - AUTH_API_URL=http://auth:3002/api
     depends_on:
@@ -41,11 +37,9 @@ services:
     container_name: rnp-auth
     command: npm run start
     restart: unless-stopped
-    ports:
-      - "3002:3002"
     environment:
       - PORT=3002
-      - HOST=http://example.com
+      # - HOST=http://example.com
       - MONGO_URL=mongodb://auth_db:27017/auth
       - API_URL=http://api:3001/api
     depends_on:
@@ -70,6 +64,8 @@ services:
       - ./nginx/nginx.conf.prod:/etc/nginx/conf.d/nginx.conf
     depends_on:
       - frontend
+      - api
+      - auth
     networks:
       - rnp
 
