@@ -8,6 +8,8 @@ services:
     restart: unless-stopped
     # ports:
       # - "3000:3000"
+    networks:
+      - rnp
 
   api:
     build: ./api
@@ -23,12 +25,16 @@ services:
       - AUTH_API_URL=http://auth:3002/api
     depends_on:
       - db
+    networks:
+      - rnp
 
   db:
     image: mongo:latest
     container_name: rnp-mongo
     volumes:
       - mongodb_api:/data/db
+    networks:
+      - rnp
 
   auth:
     build: ./auth
@@ -41,14 +47,19 @@ services:
       - PORT=3002
       - HOST=http://example.com
       - MONGO_URL=mongodb://auth_db:27017/auth
+      - API_URL=http://api:3001/api
     depends_on:
       - auth_db
+    networks:
+      - rnp
 
   auth_db:
     image: mongo
     container_name: rnp-mongo-auth
     volumes:
       - mongodb_auth:/data/db
+    networks:
+      - rnp
 
   nginx:
     image: nginx:stable-alpine
@@ -59,7 +70,13 @@ services:
       - ./nginx/nginx.conf.prod:/etc/nginx/conf.d/nginx.conf
     depends_on:
       - frontend
+    networks:
+      - rnp
 
 volumes:
   mongodb_api:
   mongodb_auth:
+
+networks:
+  rnp:
+    driver: bridge
